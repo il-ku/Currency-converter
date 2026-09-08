@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Download } from 'lucide-react';
+import { Download, ExternalLink, X } from 'lucide-react';
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -64,61 +64,88 @@ export function usePWAInstall() {
 
 export const PWAInstallButton: React.FC = () => {
   const { isInstallable, isInstalled, isIOS, install } = usePWAInstall();
-  const [showIOSGuide, setShowIOSGuide] = useState(false);
+  const [showGuide, setShowGuide] = useState(false);
+  const isIframe = window !== window.parent;
 
   // If already running as an installed PWA, hide the button
   if (isInstalled) {
     return null;
   }
 
-  // Chromium / Android / Desktop flow
-  if (isInstallable) {
-    return (
+  const handleClick = () => {
+    if (isInstallable && !isIframe) {
+      install();
+    } else {
+      setShowGuide(true);
+    }
+  };
+
+  return (
+    <>
       <button
-        onClick={install}
+        onClick={handleClick}
         className="flex items-center justify-center gap-1.5 px-3 py-1.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold rounded-xl transition shadow-lg shadow-emerald-500/20 whitespace-nowrap"
       >
         <Download className="w-4 h-4" />
         <span className="hidden sm:inline">Установить App</span>
         <span className="sm:hidden">App</span>
       </button>
-    );
-  }
 
-  // iOS Safari flow
-  if (isIOS) {
-    return (
-      <>
-        <button
-          onClick={() => setShowIOSGuide(true)}
-          className="flex items-center justify-center gap-1.5 px-3 py-1.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold rounded-xl transition shadow-lg shadow-emerald-500/20 whitespace-nowrap"
-        >
-          <Download className="w-4 h-4" />
-          <span className="hidden sm:inline">Установить iOS App</span>
-          <span className="sm:hidden">iOS App</span>
-        </button>
-
-        {showIOSGuide && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-            <div className="w-full max-w-sm rounded-2xl bg-slate-900 border border-slate-800 p-6 shadow-2xl">
-              <h3 className="text-lg font-bold text-white mb-2">Установка на iPhone / iPad</h3>
-              <p className="text-sm text-slate-300 mb-6 leading-relaxed">
-                Чтобы установить приложение на домашний экран:<br /><br />
-                1. Нажмите кнопку <strong>Поделиться</strong> в меню Safari (квадрат со стрелкой вверх).<br />
-                2. Прокрутите вниз и выберите <strong>«На экран "Домой"»</strong> (Add to Home Screen).
-              </p>
-              <button
-                onClick={() => setShowIOSGuide(false)}
-                className="w-full rounded-xl bg-slate-800 hover:bg-slate-700 py-3 text-sm font-bold text-white transition"
-              >
-                Понятно, закрыть
-              </button>
+      {showGuide && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
+          <div className="w-full max-w-sm rounded-2xl bg-slate-900 border border-slate-800 p-6 shadow-2xl relative">
+            <button 
+              onClick={() => setShowGuide(false)}
+              className="absolute top-4 right-4 text-slate-400 hover:text-white"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            
+            <h3 className="text-lg font-bold text-white mb-4 pr-6">Установка приложения</h3>
+            
+            <div className="text-sm text-slate-300 mb-6 space-y-4 leading-relaxed">
+              {isIframe ? (
+                <>
+                  <p className="text-amber-400 font-medium flex items-center gap-2">
+                    <ExternalLink className="w-4 h-4" />
+                    Вы находитесь в режиме предпросмотра.
+                  </p>
+                  <p>Чтобы установить приложение на телефон:</p>
+                  <ol className="list-decimal pl-4 space-y-2 text-slate-400">
+                    <li>Скопируйте ссылку на приложение (или откройте в новой вкладке).</li>
+                    <li>Откройте её в браузере (Chrome / Safari) на вашем смартфоне.</li>
+                    <li>Нажмите эту же кнопку установки там, либо воспользуйтесь меню браузера.</li>
+                  </ol>
+                </>
+              ) : isIOS ? (
+                <>
+                  <p>Чтобы установить приложение на домашний экран iPhone/iPad:</p>
+                  <ol className="list-decimal pl-4 space-y-2 text-slate-400">
+                    <li>Нажмите кнопку <strong>Поделиться</strong> в меню Safari (квадрат со стрелкой вверх).</li>
+                    <li>Прокрутите вниз и выберите <strong>«На экран "Домой"»</strong> (Add to Home Screen).</li>
+                  </ol>
+                </>
+              ) : (
+                <>
+                  <p>Ваш браузер заблокировал автоматическую установку.</p>
+                  <p>Для ручной установки:</p>
+                  <ol className="list-decimal pl-4 space-y-2 text-slate-400">
+                    <li>Откройте меню браузера (обычно три точки в правом верхнем углу).</li>
+                    <li>Выберите пункт <strong>«Установить приложение»</strong> или <strong>«Добавить на главный экран»</strong>.</li>
+                  </ol>
+                </>
+              )}
             </div>
-          </div>
-        )}
-      </>
-    );
-  }
 
-  return null;
+            <button
+              onClick={() => setShowGuide(false)}
+              className="w-full rounded-xl bg-slate-800 hover:bg-slate-700 py-3 text-sm font-bold text-white transition"
+            >
+              Понятно, закрыть
+            </button>
+          </div>
+        </div>
+      )}
+    </>
+  );
 };

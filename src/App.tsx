@@ -14,16 +14,13 @@ import { Header } from './components/Header';
 import { ConverterTab } from './components/ConverterTab';
 import { RatesTableTab } from './components/RatesTableTab';
 import { ChartTab } from './components/ChartTab';
-import { ApkPromptGeneratorTab } from './components/ApkPromptGeneratorTab';
 import { CurrenciesManagerModal } from './components/CurrenciesManagerModal';
 import { MobileFrame } from './components/MobileFrame';
 import {
   ArrowRightLeft,
   ListFilter,
   TrendingUp,
-  FileCode2,
   WifiOff,
-  AlertCircle,
 } from 'lucide-react';
 
 export default function App() {
@@ -31,7 +28,7 @@ export default function App() {
     getStoredTrackedCurrencies()
   );
   const [selectedSource, setSelectedSource] = useState<BankSourceId>('sberbank');
-  const [activeTab, setActiveTab] = useState<'converter' | 'rates' | 'chart' | 'apk_prompt'>('converter');
+  const [activeTab, setActiveTab] = useState<'converter' | 'rates' | 'chart'>('converter');
   const [isMobileView, setIsMobileView] = useState(false);
   const [isCurrencyModalOpen, setIsCurrencyModalOpen] = useState(false);
   const [selectedChartPair, setSelectedChartPair] = useState<{ from: CurrencyCode; to: CurrencyCode }>({
@@ -174,8 +171,6 @@ export default function App() {
             setSelectedSource={setSelectedSource}
           />
         )}
-
-        {activeTab === 'apk_prompt' && <ApkPromptGeneratorTab />}
       </main>
 
       {/* Mobile Bottom Navigation (for quick thumb access) */}
@@ -208,16 +203,6 @@ export default function App() {
         >
           <TrendingUp className="w-4 h-4" />
           <span>График</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('apk_prompt')}
-          className={`flex flex-col items-center gap-1 transition ${
-            activeTab === 'apk_prompt' ? 'text-amber-400 font-bold' : 'text-amber-300/70'
-          }`}
-        >
-          <FileCode2 className="w-4 h-4" />
-          <span>Промт APK</span>
         </button>
       </div>
 

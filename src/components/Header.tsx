@@ -17,8 +17,8 @@ import {
 } from 'lucide-react';
 
 interface HeaderProps {
-  activeTab: 'converter' | 'rates' | 'chart' | 'apk_prompt';
-  setActiveTab: (tab: 'converter' | 'rates' | 'chart' | 'apk_prompt') => void;
+  activeTab: 'converter' | 'rates' | 'chart';
+  setActiveTab: (tab: 'converter' | 'rates' | 'chart') => void;
   selectedSource: BankSourceId;
   setSelectedSource: (s: BankSourceId) => void;
   isMobileView: boolean;
@@ -142,21 +142,6 @@ export const Header: React.FC<HeaderProps> = ({
           >
             <TrendingUp className="w-4 h-4" />
             Графики пар
-          </button>
-
-          <button
-            onClick={() => setActiveTab('apk_prompt')}
-            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition border ${
-              activeTab === 'apk_prompt'
-                ? 'bg-amber-400 text-slate-950 border-amber-300 shadow-md shadow-amber-400/20'
-                : 'bg-amber-950/40 text-amber-300 border-amber-700/50 hover:bg-amber-900/60'
-            }`}
-          >
-            <FileCode2 className="w-4 h-4" />
-            <span>Промт для .APK</span>
-            <span className="text-[10px] px-1.5 py-0.2 rounded bg-amber-500/30 text-amber-200 border border-amber-400/30">
-              Android
-            </span>
           </button>
         </nav>
 
