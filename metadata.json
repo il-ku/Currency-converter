@@ -1,0 +1,6 @@
+{
+  "name": "Конвертер Валют & APK Builder",
+  "description": "Мультивалютный конвертер и трекер курсов Сбербанка, Капиталбанка и Лиговки с графиками, историей и генератором Android APK промта.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
